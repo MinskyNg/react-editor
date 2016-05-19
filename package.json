@@ -1,0 +1,36 @@
+{
+  "name": "markeditor",
+  "version": "1.0.0",
+  "description": "Minsky's personal markeditor",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MinskyNg/markeditor.git"
+  },
+  "author": "minskyng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MinskyNg/markeditor/issues"
+  },
+  "homepage": "https://github.com/MinskyNg/markeditor#readme",
+  "devDependencies": {
+    "browser-sync": "^2.12.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-cached": "^1.1.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-cssnano": "^2.1.2",
+    "gulp-htmlmin": "^1.3.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "gulp-sourcemaps": "^2.0.0-alpha",
+    "gulp-uglify": "^1.5.3",
+    "gulp.spritesmith": "^6.2.1"
+  },
+  "dependencies": {
+  }
+}
