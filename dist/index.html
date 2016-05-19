@@ -1,0 +1,40 @@
+<!DOCTYPE html><html><head><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta charset="UTF-8"><title>markeditor</title><link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/normalize/3.0.3/normalize.min.css"><link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/highlight.js/9.4.0/styles/github.min.css"><link rel="stylesheet" type="text/css" href="css/markeditor.min.css"></head><body><div class="aside" style="left: -200px"><h2>文章列表</h2><a href="">文章</a> <a href="">文章</a> <a href="">文章</a> <a href="">文章</a> <a href="">文章</a> <button id="show-article"></button></div><div class="modal"></div><div class="wrapper" style="left: 0px"><div class="nav"><input type="text" id="input-title" placeholder="请输入标题"><button id="undo" disabled="true" style="background-color: #555">撤销</button> <button id="redo" disabled="true" style="background-color: #555">恢复</button></div><div id="main"><textarea id="editor">
+# (GitHub-Flavored) Markdown Editor
+
+Basic useful feature list:
+
+ * Ctrl+S / Cmd+S to save the file
+ * Ctrl+Shift+S / Cmd+Shift+S to choose to save as Markdown or HTML
+ * Drag and drop a file into here to load it
+ * File contents are saved in the URL so you can share files
+
+
+I'm no good at writing sample / filler text, so go write something yourself.
+
+Look, a list!
+
+ * foo
+ * bar
+ * baz
+
+And here's some code! :+1:
+
+```javascript
+$(function(){
+  $('div').html('I am a div.');
+});
+```
+
+This is [on GitHub](https://github.com/jbt/markdown-editor) so let me know if I've b0rked it somewhere.
+
+
+Props to Mr. Doob and his [code editor](http://mrdoob.com/projects/code-editor/), from which
+the inspiration to this, and some handy implementation hints, came.
+
+### Stuff used to make this:
+
+ * [markdown-it](https://github.com/markdown-it/markdown-it) for Markdown parsing
+ * [CodeMirror](http://codemirror.net/) for the awesome syntax-highlighted editor
+ * [highlight.js](http://softwaremaniacs.org/soft/highlight/en/) for syntax highlighting in output code blocks
+ * [js-deflate](https://github.com/dankogai/js-deflate) for gzipping of data to make it fit in URLs
+    </textarea><div id="preview"></div></div></div><script type="text/javascript" src="http://cdn.bootcss.com/highlight.js/9.3.0/highlight.min.js"></script><script type="text/javascript" src="http://cdn.bootcss.com/markdown-it/6.0.2/markdown-it.min.js"></script><script type="text/javascript" src="http://cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script><script type="text/javascript" src="js/main.min.js"></script></body></html>
