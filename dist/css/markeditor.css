@@ -3,51 +3,10 @@
 
 html, body {
   height: 100%;
-  overflow-x: hidden; }
+  overflow: hidden; }
 
 input, button, select, textarea {
   outline: none; }
-
-.modal {
-  display: none;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  z-index: 9; }
-
-.aside {
-  position: absolute;
-  width: 200px;
-  height: 100%;
-  padding: 10px;
-  background-color: #f5f5f5;
-  box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.5);
-  z-index: 99;
-  transition: all 0.6s; }
-  .aside h2 {
-    text-align: center; }
-  .aside a {
-    display: block;
-    margin-top: 10px;
-    font-size: 1.1em;
-    color: #555;
-    text-decoration: none; }
-
-#show-article {
-  position: absolute;
-  top: 5px;
-  right: -60px;
-  width: 60px;
-  height: 50px;
-  padding: 0;
-  border: 0;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  font-size: 1.2em;
-  background: url(../img/arrow_right.png) no-repeat 5px 50%;
-  background-color: #f5f5f5;
-  transition: all 0.5s; }
 
 .wrapper {
   position: absolute;
@@ -62,23 +21,63 @@ input, button, select, textarea {
   padding-left: 100px;
   background-color: #3b3b3b; }
   .nav input {
-    width: 100px;
-    margin: 15px 25px 0;
-    padding: 5px;
+    width: 120px;
+    height: 30px;
+    margin: 18px 25px 0px;
+    padding: 8px;
     border: 0;
     border-radius: 5px;
     transition: all 0.6s; }
     .nav input:focus {
       width: 200px; }
   .nav button {
-    width: 80px;
+    width: 30px;
     height: 30px;
-    margin: 15px 8px 0;
+    vertical-align: middle;
+    margin: 0px 10px;
     padding: 0;
     border: 0;
+    border-radius: 5px; }
+  .nav .new-article {
+    background: #f5f5f5 url(../img/new.png) no-repeat 50%; }
+  .nav .del-article {
+    background: #f5f5f5 url(../img/del.png) no-repeat 50%; }
+  .nav .undo {
+    background: #f5f5f5 url(../img/undo.png) no-repeat 50%; }
+  .nav .redo {
+    background: #f5f5f5 url(../img/redo.png) no-repeat 50%; }
+  .nav .show-tips {
+    display: block;
+    float: right;
+    width: 42px;
+    height: 42px;
+    margin: 10px 40px 0 0;
+    padding-top: 3px;
     border-radius: 5px;
-    color: black;
-    box-shadow: 1px 2px 3px #555; }
+    text-align: center;
+    background: #f5f5f5 url(../img/tips.png) no-repeat 50%;
+    cursor: pointer; }
+
+.tips {
+  position: absolute;
+  top: 15px;
+  right: 100px;
+  width: 380px;
+  height: 600px;
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #fcfcfc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.225);
+  z-index: 99;
+  overflow: auto; }
+  .tips h2, .tips h3 {
+    text-align: center; }
+  .tips a {
+    display: block;
+    text-align: center;
+    text-decoration: none; }
+  .tips li {
+    margin-top: 8px; }
 
 #main {
   position: absolute;
@@ -188,3 +187,65 @@ input, button, select, textarea {
     line-height: 1.3em; }
   #preview code {
     padding: 0 3px; }
+
+.modal {
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 9; }
+
+.aside {
+  position: absolute;
+  width: 250px;
+  height: 100%;
+  padding: 10px;
+  background-color: #f5f5f5;
+  box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  transition: all 0.6s;
+  overflow: auto; }
+  .aside h2 {
+    padding-bottom: 5px;
+    border-bottom: 2px solid black;
+    text-align: center; }
+  .aside .article-list {
+    padding-left: 8px;
+    list-style-type: none; }
+    .aside .article-list li {
+      margin-top: 5px;
+      padding: 3px;
+      padding-left: 8px;
+      border-radius: 3px;
+      font-size: 1.1em;
+      cursor: pointer; }
+    .aside .article-list .active {
+      color: #fcfcfc;
+      background-color: #555;
+      cursor: default; }
+    .aside .article-list .delete {
+      display: inline-block;
+      float: right;
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      background: url(../img/delete.png) no-repeat 50%;
+      cursor: pointer; }
+
+#show-article {
+  display: block;
+  position: absolute;
+  top: 5px;
+  width: 60px;
+  height: 50px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: 1.2em;
+  background: #f5f5f5 url(../img/arrow_right.png) no-repeat 5px 50%;
+  cursor: pointer;
+  z-index: 99;
+  transition: all 0.6s; }
