@@ -49,6 +49,9 @@ input, button, select, textarea {outline:none}
     .del-article {
         background: #f5f5f5 url(../img/del.png) no-repeat 50%;
     }
+    .down-article {
+        background: #f5f5f5 url(../img/download.png) no-repeat 50%;
+    }
     .undo {
         background: #f5f5f5 url(../img/undo.png) no-repeat 50%;
     }
@@ -113,10 +116,11 @@ input, button, select, textarea {outline:none}
 }
 
 // 编辑区
-#editor {
+#code {
     float: left;
     height: 100%;
-    padding: 30px 20px 20px 30px;
+    padding: 20px;
+    padding-left: 30px;
     border: 0;
     background-color: #f5f5f5;
     box-shadow: 2px 3px 4px rgba(0,0,0,0.5);
