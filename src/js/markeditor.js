@@ -1,3 +1,7 @@
+/*
+一些初始化
+*/
+
 // 标题输入区
 var inputTitle = document.getElementById('input-title');
 // 编辑区
@@ -6,7 +10,7 @@ var $editor = $(editor);
 // 预览区
 var preview = document.getElementById('preview');
 var $preview = $(preview);
-// markdown转换对象
+// 创建markdown转换对象并设置代码高亮
 var md = markdownit({
     highlight: function(str, lang) {
         if (lang && hljs.getLanguage(lang)) {
@@ -19,18 +23,22 @@ var md = markdownit({
 });
 // 自动保存定时器
 var timer;
-// undo redo
+// undo redo按钮
 var $undo = $('.undo');
 var $redo = $('.redo');
 // undo redo 记录栈
 var undoLog = [];
 var redoLog = [];
+// 区域显示按钮
+var $showDouble = $('.show-double');
+var $showEditor = $('.show-editor');
+var $showPreview = $('.show-preview');
 // 文章列表
 var $articleList = $('.article-list');
 // 备用文章
 articleSpare = JSON.stringify([
-        { title: '标题1', body: '这是内容1', date: '2016-5-20 20:41:48' },
-        { title: '标题2', body: '这是内容2', date: '2016-5-20 20:41:49' }]
+        { title: '文章1', body: '# 文章1', date: '2016-5-20 20:41:48' },
+        { title: '文章2', body: '# 文章2', date: '2016-5-20 20:41:49' }]
 );
 // 获取本地存储文章
 var articleStorage = localStorage.getItem('article') || articleSpare;
@@ -69,6 +77,7 @@ var handleScroll = function() {
     // 移除另一个区域的滚动事件 防止循环滚动
     var $other = $divs.not(this).off('scroll');
     var other = $other.get(0);
+    // 滚动大小按内容百分比计算
     var percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
     other.scrollTop = percentage * (other.scrollHeight - other.offsetHeight);
     // 恢复另一个区域的滚动事件
@@ -83,25 +92,83 @@ $divs.on('scroll', handleScroll);
 inputTitle.addEventListener('change', function() {
     // 若输入为空则取日期为标题
     article.title = inputTitle.value || article.date;
+    // XSS输入过滤
+    article.title = article.title.replace(/[<>'&]/g, function(match) {
+            switch (match) {
+                case '<':
+                    return '&lt;';
+                case '>':
+                    return '&gt;';
+                case '&':
+                    return '&amp;';
+                case '\'':
+                    return '&quot;';
+         }
+     });
     $articleList.find('li[alt="' + article.date + '"]').text(article.title);
     articleStorage = JSON.stringify(articleSource);
     localStorage.setItem('article', articleStorage);
 });
 
 
-// 隔段时间记录编辑区并自动保存
+// 定时记录编辑区并自动保存
 function setLog() {
     if (undoLog[undoLog.length - 1] !== editor.value) {
+        // 防止存储数据栈过深
+        if (undoLog.length > 50) {
+            undoLog.shift();
+        }
         undoLog[undoLog.length] = editor.value;
         article.body = editor.value;
         articleStorage = JSON.stringify(articleSource);
         localStorage.setItem('article', articleStorage);
     }
-    timer = setTimeout(setLog, 1500);
+    timer = setTimeout(setLog, 800);
 }
 setLog();
 
-// undo按钮事件
+
+/*
+工具栏
+*/
+
+// 新建文章事件
+$('.new-article').click(function() {
+    // 关闭自动保存
+    clearTimeout(timer);
+    // 清除记录栈
+    undoLog = [];
+    redoLog = [];
+    $undo.attr('disabled', true).css('background-color', '#555');
+    $redo.attr('disabled', true).css('background-color', '#555');
+    article = { title: '新建文章', body: '', date: '' };
+    articleSource.push(article);
+    // 设置日期
+    var now = new Date();
+    article.date = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    // 设置标题，编辑区和预览区
+    inputTitle.value = article.title;
+    editor.value = article.body;
+    preview.innerHTML = md.render(editor.value);
+    // 添加到文章列表
+    $('.active').removeClass('active');
+    $articleList.prepend('<li class="active" alt="' + article.date + '" title="选择文章">' + article.title + '<a class="delete" title="删除文章"></a></li>');
+    // 重启自动保存
+    setLog();
+});
+
+// 删除当前文章事件
+$('.del-article').click(function() {
+    var date = article.date;
+    var length = $articleList.children().length;
+    for (var i = 0; i < length; i++) {
+        if ($($articleList.children()[i]).is('.active')) {
+            $($articleList.children()[i]).find('.delete').click();
+        }
+    }
+});
+
+// undo事件
 $undo.click(function() {
     redoLog.push(undoLog.pop());
     $editor.val(undoLog[undoLog.length - 1]).blur();
@@ -116,7 +183,7 @@ $undo.click(function() {
     localStorage.setItem('article', articleStorage);
 });
 
-// redo按钮事件
+// redo事件
 $redo.click(function() {
     var redoTxt = redoLog.pop();
     undoLog.push(redoTxt);
@@ -132,6 +199,32 @@ $redo.click(function() {
     localStorage.setItem('article', articleStorage);
 });
 
+// 双屏显示事件
+$showDouble.click(function() {
+    $editor.css({'display': 'block', 'width': '48%'});
+    $preview.css({'display': 'block', 'width': '52%'});
+    $showDouble.attr('disabled', true).css('background-color', '#555');
+    $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
+    $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
+});
+
+// 只显示编辑区事件
+$showEditor.click(function() {
+    $editor.css({'display': 'block', 'width': '100%'});
+    $preview.css({'display': 'none', 'width': '0%'});
+    $showEditor.attr('disabled', true).css('background-color', '#555');
+    $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
+    $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
+});
+
+// 只显示预览区事件
+$showPreview.click(function() {
+    $editor.css({'display': 'none', 'width': '0%'});
+    $preview.css({'display': 'block', 'width': '100%'});
+    $showPreview.attr('disabled', true).css('background-color', '#555');
+    $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
+    $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
+});
 
 // 语法提示
 $('.show-tips').click(function() {
@@ -142,6 +235,10 @@ $('.show-tips').click(function() {
     }
 });
 
+
+/*
+侧边栏
+*/
 
 // 初始化文章列表
 (function() {
@@ -179,9 +276,23 @@ $articleList.click(function(event) {
     var $target = $(event.target);
     if ($target.is('.delete')) {
         if (confirm('确定要删除此文章吗?')) {
+            // 获取父元素
+            var $targetLi = $target.parent('li');
+            // 如果删除的是当前编辑文章
+            if ($targetLi.is('.active')) {
+                // 切换到其他文章
+                if ($targetLi.next().is('li')) {
+                    $targetLi.next().click();
+                } else if ($targetLi.prev().is('li')) {
+                    $targetLi.prev().click();
+                } else {
+                    // 若无其他文章则新建
+                    $('.new-article').click();
+                }
+            }
             // 根据日期查找文章
-            var date = $target.parent('li').attr('alt');
-            $target.parent('li').remove();
+            var date = $targetLi.attr('alt');
+            $targetLi.remove();
             for (var i = 0; i < articleSource.length; i++) {
                 if (articleSource[i].date === date) {
                     articleSource.splice(i, 1);
