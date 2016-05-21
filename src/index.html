@@ -22,7 +22,7 @@
         <input type="text" id="input-title" placeholder="请输入标题"></input>
         <button class="new-article" title="新建文章"></button>
         <button class="del-article" title="删除文章"></button>
-        <button class="down-article" title="保存到本地"></button>
+        <button class="down-article" title="下载文章"></button>
         <button class="undo" title="撤销" disabled="true" style="background-color: #555;"></button>
         <button class="redo" title="恢复" disabled="true" style="background-color: #555;"></button>
         <button class="show-double" title="双屏显示" disabled="true" style="background-color: #555;"></button>
@@ -81,10 +81,30 @@
         </div>
     </div>
     <div id="main">
-    <textarea id="code" style="display: block; width: 48%;">
+    <textarea id="editor" style="display: block; width: 48%;">
     </textarea>
     <div id="preview" style="display: block; width: 52%;"></div>
     </div>
+    <div class="toolbar">
+        <button class="add-heading" title="添加标题"></button>
+        <button class="add-strong" title="添加粗体"></button>
+        <button class="add-italic" title="添加斜体"></button>
+        <button class="add-code" title="添加代码"></button>
+        <button class="add-link" title="添加链接"></button>
+        <button class="add-img" title="添加图片"></button>
+        <button class="add-ul" title="添加无序列表"></button>
+        <button class="add-ol" title="添加有序列表"></button>
+        <button class="add-quote" title="添加块引用"></button>
+        <button class="add-line" title="添加分割线"></button>
+    </div>
+    </div>
+    <div class="form-wrapper"  style="display: none">
+        <form>
+            <input class="input-word" type="text" placeholder="请输入说明"></input>
+            <input class="input-address" type="text" placeholder="请输入地址"></input>
+            <button class="cancel">取消</button>
+            <button class="submit">确定</button>
+        </form>
     </div>
     <script type="text/javascript" src="http://cdn.bootcss.com/highlight.js/9.3.0/highlight.min.js"></script>
     <script type="text/javascript" src="http://cdn.bootcss.com/markdown-it/6.0.2/markdown-it.min.js"></script>

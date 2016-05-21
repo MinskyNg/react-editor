@@ -11,6 +11,7 @@ input, button, select, textarea {
 .wrapper {
   position: absolute;
   top: 0;
+  min-width: 800px;
   width: 100%;
   height: 100%;
   transition: all 0.6s; }
@@ -75,7 +76,7 @@ input, button, select, textarea {
   padding: 8px;
   border-radius: 5px;
   background-color: #fcfcfc;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.225);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   z-index: 99;
   overflow: auto; }
   .tips h2, .tips h3 {
@@ -92,12 +93,13 @@ input, button, select, textarea {
   top: 60px;
   width: 100%; }
 
-#code {
+#editor {
   float: left;
   height: 100%;
   padding: 20px;
   padding-left: 30px;
   border: 0;
+  line-height: 1.5em;
   background-color: #f5f5f5;
   box-shadow: 2px 3px 4px rgba(0, 0, 0, 0.5);
   resize: none; }
@@ -105,8 +107,9 @@ input, button, select, textarea {
 #preview {
   float: right;
   height: 100%;
-  padding: 10px;
+  padding: 5px;
   padding-left: 20px;
+  color: #3b3b3b;
   overflow: auto; }
   #preview a {
     text-decoration: none;
@@ -195,6 +198,88 @@ input, button, select, textarea {
     line-height: 1.3em; }
   #preview code {
     padding: 0 3px; }
+
+.toolbar {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  width: 470px;
+  height: 40px;
+  padding: 3px;
+  padding-left: 8px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 3; }
+  .toolbar button {
+    width: 31px;
+    height: 28px;
+    vertical-align: middle;
+    margin: 3px 5px 0;
+    padding: 0;
+    border: 0;
+    border-radius: 5px; }
+  .toolbar .add-heading {
+    background: transparent url(../img/heading.png) no-repeat 50%; }
+  .toolbar .add-strong {
+    background: transparent url(../img/strong.png) no-repeat 50%; }
+  .toolbar .add-italic {
+    background: transparent url(../img/italic.png) no-repeat 50%; }
+  .toolbar .add-code {
+    background: transparent url(../img/code.png) no-repeat 50%; }
+  .toolbar .add-link {
+    background: transparent url(../img/link.png) no-repeat 50%; }
+  .toolbar .add-img {
+    background: transparent url(../img/img.png) no-repeat 50%; }
+  .toolbar .add-ul {
+    background: transparent url(../img/ul.png) no-repeat 50%; }
+  .toolbar .add-ol {
+    background: transparent url(../img/ol.png) no-repeat 50%; }
+  .toolbar .add-quote {
+    background: transparent url(../img/quote.png) no-repeat 50%; }
+  .toolbar .add-line {
+    background: transparent url(../img/line.png) no-repeat 50%; }
+
+.form-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 999; }
+  .form-wrapper form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 500px;
+    height: 160px;
+    margin-left: -250px;
+    margin-top: -180px;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #f5f5f5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); }
+    .form-wrapper form [type="text"] {
+      display: block;
+      width: 280px;
+      height: 30px;
+      margin-top: 8px;
+      margin-left: 90px;
+      padding: 3px;
+      border: 1px solid #f5f5f5;
+      border-radius: 5px;
+      box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5); }
+    .form-wrapper form button {
+      width: 100px;
+      height: 30px;
+      margin-top: 20px;
+      padding: 3px;
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
+      .form-wrapper form button:hover {
+        background-color: #B7B7B7; }
+    .form-wrapper form .cancel {
+      margin-left: 60px;
+      margin-right: 130px; }
 
 .modal {
   display: none;
