@@ -1,0 +1,96 @@
+// 主体样式
+#main {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+}
+
+// 编辑区
+#editor {
+    float: left;
+    height: 100%;
+    padding: 20px;
+    padding-left: 30px;
+    border: 0;
+    line-height: 1.5em;
+    background-color: #f5f5f5;
+    box-shadow: 2px 3px 4px rgba(0,0,0,0.5);
+    resize: none;
+}
+
+// 预览区样式
+@import "preview";
+
+
+// 浮动工具栏
+.toolbar {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    width: 470px;
+    height: 40px;
+    padding: 3px;
+    padding-left: 8px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 3;
+    button {
+        width: 31px;
+        height: 28px;
+        margin: 3px 5px 0;
+        padding: 0;
+        border: 0;
+        border-radius: 5px;
+        vertical-align: middle;
+        background-color: transparent;
+    }
+}
+
+// 弹出输入框
+.form-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    z-index: 999;
+    form {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 500px;
+        height: 160px;
+        margin-left: -250px;
+        margin-top: -180px;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #f5f5f5;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        [type="text"] {
+            display: block;
+            width: 280px;
+            height: 30px;
+            margin-top: 8px;
+            margin-left: 90px;
+            padding: 3px;
+            border: 1px solid #f5f5f5;
+            border-radius: 5px;
+            box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
+        }
+        button {
+            width: 100px;
+            height: 30px;
+            margin-top: 20px;
+            padding: 3px;
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+            &:hover {
+                background-color: #B7B7B7;
+            }
+        }
+        .cancel {
+            margin-left: 60px;
+            margin-right: 130px;
+        }
+    }
+}

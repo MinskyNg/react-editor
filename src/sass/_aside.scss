@@ -1,0 +1,77 @@
+// 侧边栏样式
+
+// 遮罩层
+.modal {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    z-index: 9;
+}
+
+// 显示侧边栏按钮
+#show-article {
+    display: block;
+    position: absolute;
+    top: 5px;
+    width: 60px;
+    height: 50px;
+    margin: 0;
+    padding: 1px 0 0 5px;
+    border: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 1.2em;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    z-index: 99;
+    transition: all 0.6s;
+}
+
+// 侧边栏
+.aside {
+    position: absolute;
+    width: 250px;
+    height: 100%;
+    padding: 10px;
+    background-color: #f5f5f5;
+    box-shadow: 2px 3px 4px rgba(0,0,0,0.5);
+    z-index: 99;
+    transition: all 0.6s;
+    overflow: auto;
+    h2 {
+        padding-bottom: 5px;
+        border-bottom: 2px solid black;
+        text-align: center;
+    }
+
+    // 文章列表
+    .article-list {
+        padding-left: 8px;
+        list-style-type: none;
+        li {
+            margin-top: 5px;
+            padding: 3px;
+            padding-left: 8px;
+            border-radius: 3px;
+            font-size: 1.1em;
+            cursor: pointer;
+        }
+        .active {
+            color: #fcfcfc;
+            background-color: #555;
+            cursor: default;
+        }
+        .delete {
+            display: inline-block;
+            float: right;
+            margin-top: 3px;
+            width: 16px;
+            height: 16px;
+            background-image: url(../img/background/sprite.png);
+            background-position: -30px -119px;;
+            cursor: pointer;
+        }
+    }
+}
