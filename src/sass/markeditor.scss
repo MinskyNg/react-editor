@@ -7,7 +7,158 @@ html, body {
 }
 input, button, select, textarea {outline:none}
 
-// 包裹层
+
+.icon-arrow_left {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: 0px 0px;
+    width: 48px;
+    height: 48px;
+}
+.icon-arrow_right {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -48px 0px;
+    width: 48px;
+    height: 48px;
+}
+.icon-code {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -32px -63px;
+    width: 31px;
+    height: 23px;
+}
+.icon-del {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -48px -95px;
+    width: 24px;
+    height: 24px;
+}
+.icon-double {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -63px -63px;
+    width: 26px;
+    height: 23px;
+}
+.icon-download {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -96px -24px;
+    width: 24px;
+    height: 24px;
+}
+.icon-editor {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -120px -96px;
+    width: 24px;
+    height: 23px;
+}
+.icon-heading {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -96px -48px;
+    width: 24px;
+    height: 24px;
+}
+.icon-img {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: 0px -95px;
+    width: 24px;
+    height: 24px;
+}
+.icon-italic {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -24px -95px;
+    width: 24px;
+    height: 24px;
+}
+.icon-line {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -50px -48px;
+    width: 31px;
+    height: 14px;
+}
+.icon-link {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -96px 0px;
+    width: 24px;
+    height: 24px;
+}
+.icon-new {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -96px -94px;
+    width: 24px;
+    height: 25px;
+}
+.icon-ol {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -120px 0px;
+    width: 24px;
+    height: 24px;
+}
+.icon-preview {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: 0px -119px;
+    width: 30px;
+    height: 18px;
+}
+.icon-quote {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -96px -72px;
+    width: 24px;
+    height: 22px;
+}
+.icon-redo {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -120px -48px;
+    width: 24px;
+    height: 24px;
+}
+.icon-strong {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -120px -24px;
+    width: 24px;
+    height: 24px;
+}
+.icon-tips {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: 0px -63px;
+    width: 32px;
+    height: 32px;
+}
+.icon-ul {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -72px -95px;
+    width: 24px;
+    height: 24px;
+}
+.icon-undo {
+    display: inline-block;
+    background-image: url(../img/background/sprite.png);
+    background-position: -120px -72px;
+    width: 24px;
+    height: 24px;
+}
+
+
+
+// 包裹层(导航栏 编辑区 预览区)
 .wrapper {
     position: absolute;
     top: 0;
@@ -38,46 +189,49 @@ input, button, select, textarea {outline:none}
     button {
         width: 30px;
         height: 30px;
-        vertical-align: middle;
         margin: 0px 10px;
         padding: 0;
         border: 0;
         border-radius: 5px;
+        vertical-align: middle;
+        background-color: #f5f5f5;
     }
     .new-article {
-        background: #f5f5f5 url(../img/new.png) no-repeat 50%;
+        padding-top: 2px;
     }
     .del-article {
-        background: #f5f5f5 url(../img/del.png) no-repeat 50%;
+        padding-top: 1px;
     }
     .down-article {
-        background: #f5f5f5 url(../img/download.png) no-repeat 50%;
+        padding-top: 3px;
+        padding-left: 2px;
     }
     .undo {
-        background: #f5f5f5 url(../img/undo.png) no-repeat 50%;
+        padding-top: 1px;
     }
     .redo {
-        background: #f5f5f5 url(../img/redo.png) no-repeat 50%;
+        padding-top: 1px;
     }
     .show-double {
-        background: #f5f5f5 url(../img/double.png) no-repeat 50%;
+        padding-top: 2px;
     }
     .show-editor {
-        background: #f5f5f5 url(../img/editor.png) no-repeat 50%;
+        padding-top: 1px;
+        padding-left: 3px;
     }
     .show-preview {
-        background: #f5f5f5 url(../img/preview.png) no-repeat 50%;
+        padding-top: 1px;
     }
     .show-tips {
         display: block;
         float: right;
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         margin: 10px 40px 0 0;
-        padding-top: 3px;
+        padding-top: 4px;
         border-radius: 5px;
         text-align: center;
-        background: #f5f5f5 url(../img/tips.png) no-repeat 50%;
+        background-color: #f5f5f5;
         cursor: pointer;
     }
 }
@@ -166,7 +320,6 @@ input, button, select, textarea {outline:none}
     h1, h2, h3, h4, h5, h6 {
         font-weight: normal;
         line-height: 1em;
-
         color: #111;
     }
     h4, h5, h6 {
@@ -241,20 +394,20 @@ input, button, select, textarea {outline:none}
       background-color: #F8F8F8;
       border: 1px solid #CCC;
   }
-    pre {
-        white-space: pre;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        padding: 5px;
-    }
-    pre code {
-        border: 0px;
-        background: transparent;
-        line-height: 1.3em;
-    }
-    code {
-        padding: 0 3px;
-    }
+  pre {
+    white-space: pre;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    padding: 5px;
+}
+pre code {
+    border: 0px;
+    background: transparent;
+    line-height: 1.3em;
+}
+code {
+    padding: 0 3px;
+}
 }
 
 // 浮动工具栏
@@ -272,41 +425,12 @@ input, button, select, textarea {outline:none}
     button {
         width: 31px;
         height: 28px;
-        vertical-align: middle;
         margin: 3px 5px 0;
         padding: 0;
         border: 0;
         border-radius: 5px;
-    }
-    .add-heading {
-        background: transparent url(../img/heading.png) no-repeat 50%;
-    }
-    .add-strong {
-        background: transparent url(../img/strong.png) no-repeat 50%;
-    }
-    .add-italic {
-        background: transparent url(../img/italic.png) no-repeat 50%;
-    }
-    .add-code {
-        background: transparent url(../img/code.png) no-repeat 50%;
-    }
-    .add-link {
-        background: transparent url(../img/link.png) no-repeat 50%;
-    }
-    .add-img {
-        background: transparent url(../img/img.png) no-repeat 50%;
-    }
-    .add-ul {
-        background: transparent url(../img/ul.png) no-repeat 50%;
-    }
-    .add-ol {
-        background: transparent url(../img/ol.png) no-repeat 50%;
-    }
-    .add-quote {
-        background: transparent url(../img/quote.png) no-repeat 50%;
-    }
-    .add-line {
-        background: transparent url(../img/line.png) no-repeat 50%;
+        vertical-align: middle;
+        background-color: transparent;
     }
 }
 
@@ -370,6 +494,25 @@ input, button, select, textarea {outline:none}
     z-index: 9;
 }
 
+// 显示侧边栏按钮
+#show-article {
+    display: block;
+    position: absolute;
+    top: 5px;
+    width: 60px;
+    height: 50px;
+    margin: 0;
+    padding: 1px 0 0 5px;
+    border: 0;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    font-size: 1.2em;
+    background-color: #f5f5f5;
+    cursor: pointer;
+    z-index: 99;
+    transition: all 0.6s;
+}
+
 // 侧边栏
 .aside {
     position: absolute;
@@ -410,27 +553,9 @@ input, button, select, textarea {outline:none}
             margin-top: 3px;
             width: 16px;
             height: 16px;
-            background: url(../img/delete.png) no-repeat 50%;
+            background-image: url(../img/background/sprite.png);
+            background-position: -30px -119px;;
             cursor: pointer;
         }
     }
-}
-
-// 显示侧边栏按钮
-#show-article {
-    display: block;
-    position: absolute;
-    top: 5px;
-    width: 60px;
-    height: 50px;
-    margin: 0;
-    padding: 0;
-    border: 0;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    font-size: 1.2em;
-    background: #f5f5f5 url(../img/arrow_right.png) no-repeat 5px 50%;
-    cursor: pointer;
-    z-index: 99;
-    transition: all 0.6s;
 }

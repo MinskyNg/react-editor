@@ -1,0 +1,150 @@
+/*
+Icon classes can be used entirely standalone. They are named after their original file names.
+
+Example usage in HTML:
+
+`display: block` sprite:
+<div class="icon-home"></div>
+
+To change `display` (e.g. `display: inline-block;`), we suggest using a common CSS class:
+
+// CSS
+.icon {
+  display: inline-block;
+}
+
+// HTML
+<i class="icon icon-home"></i>
+*/
+.icon-arrow_left {
+  background-image: url(sprite.png);
+  background-position: 0px 0px;
+  width: 48px;
+  height: 48px;
+}
+.icon-arrow_right {
+  background-image: url(sprite.png);
+  background-position: -48px 0px;
+  width: 48px;
+  height: 48px;
+}
+.icon-code {
+  background-image: url(sprite.png);
+  background-position: -32px -63px;
+  width: 31px;
+  height: 23px;
+}
+.icon-del {
+  background-image: url(sprite.png);
+  background-position: -48px -95px;
+  width: 24px;
+  height: 24px;
+}
+.icon-delete {
+  background-image: url(sprite.png);
+  background-position: -30px -119px;
+  width: 16px;
+  height: 16px;
+}
+.icon-double {
+  background-image: url(sprite.png);
+  background-position: -63px -63px;
+  width: 26px;
+  height: 23px;
+}
+.icon-download {
+  background-image: url(sprite.png);
+  background-position: -96px -24px;
+  width: 24px;
+  height: 24px;
+}
+.icon-editor {
+  background-image: url(sprite.png);
+  background-position: -120px -96px;
+  width: 24px;
+  height: 23px;
+}
+.icon-heading {
+  background-image: url(sprite.png);
+  background-position: -96px -48px;
+  width: 24px;
+  height: 24px;
+}
+.icon-img {
+  background-image: url(sprite.png);
+  background-position: 0px -95px;
+  width: 24px;
+  height: 24px;
+}
+.icon-italic {
+  background-image: url(sprite.png);
+  background-position: -24px -95px;
+  width: 24px;
+  height: 24px;
+}
+.icon-line {
+  background-image: url(sprite.png);
+  background-position: 0px -48px;
+  width: 86px;
+  height: 15px;
+}
+.icon-link {
+  background-image: url(sprite.png);
+  background-position: -96px 0px;
+  width: 24px;
+  height: 24px;
+}
+.icon-new {
+  background-image: url(sprite.png);
+  background-position: -96px -95px;
+  width: 24px;
+  height: 24px;
+}
+.icon-ol {
+  background-image: url(sprite.png);
+  background-position: -120px 0px;
+  width: 24px;
+  height: 24px;
+}
+.icon-preview {
+  background-image: url(sprite.png);
+  background-position: 0px -119px;
+  width: 30px;
+  height: 18px;
+}
+.icon-quote {
+  background-image: url(sprite.png);
+  background-position: -96px -72px;
+  width: 24px;
+  height: 22px;
+}
+.icon-redo {
+  background-image: url(sprite.png);
+  background-position: -120px -48px;
+  width: 24px;
+  height: 24px;
+}
+.icon-strong {
+  background-image: url(sprite.png);
+  background-position: -120px -24px;
+  width: 24px;
+  height: 24px;
+}
+.icon-tips {
+  background-image: url(sprite.png);
+  background-position: 0px -63px;
+  width: 32px;
+  height: 32px;
+}
+.icon-ul {
+  background-image: url(sprite.png);
+  background-position: -72px -95px;
+  width: 24px;
+  height: 24px;
+}
+.icon-undo {
+  background-image: url(sprite.png);
+  background-position: -120px -72px;
+  width: 24px;
+  height: 24px;
+}

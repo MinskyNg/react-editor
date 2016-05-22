@@ -39,6 +39,8 @@ var $toolbar = $('.toolbar');
 var $formWrapper = $('.form-wrapper');
 // 文章列表
 var $articleList = $('.article-list');
+// 去除前后空格
+var regTrim = /(^\s*)|(\s*$)/g;
 
 
 // 备用文章
@@ -72,10 +74,15 @@ var saveArticle = function() {
 };
 
 
+
+/*
+编辑区和预览区
+*/
+
 // 动态设置主区域高度
-$('#main').height(document.body.clientHeight - 60);
-$(window).resize(function() {
-    $('#main').height(document.body.clientHeight - 60);
+document.getElementById('main').style.height = (document.body.clientHeight - 60) + 'px';
+window.addEventListener('resize', function() {
+    document.getElementById('main').style.height = (document.body.clientHeight - 60) + 'px';
 });
 
 
@@ -90,45 +97,25 @@ $editor.on('input propertychange', function() {
 
 
 // 编辑区和预览区设置同步滚动
-var $divs = $('#editor, #preview');
 var handleScroll = function() {
+    var other;
+    if (this === editor) {
+        other = preview;
+    } else {
+        other = editor;
+    }
     // 移除另一个区域的滚动事件 防止循环滚动
-    var $other = $divs.not(this).off('scroll');
-    var other = $other.get(0);
+    other.removeEventListener('scroll', handleScroll);
     // 滚动大小按内容百分比计算
     var percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
     other.scrollTop = percentage * (other.scrollHeight - other.offsetHeight);
     // 恢复另一个区域的滚动事件
     setTimeout(function() {
-        $other.on('scroll', handleScroll);
+        other.addEventListener('scroll', handleScroll);
     }, 200);
 }
-$divs.on('scroll', handleScroll);
-
-
-// 记录标题变动
-inputTitle.addEventListener('change', function() {
-    // 去除前后空格并做XSS输入过滤
-    article.title = inputTitle.value.replace(/(^\s*)|(\s*$)/g, '').replace(/[<>'&]/g, function(match) {
-        switch (match) {
-            case '<':
-                return '&lt;';
-            case '>':
-                return '&gt;';
-            case '&':
-                return '&amp;';
-            case '\'':
-                return '&quot;';
-        }
-    });
-    // 若输入为空则取日期为标题
-    article.title = article.title || article.date;
-    // 长标题截短
-    var title = article.title;
-    title = (title.length < 11) ? title : title.substring(0, 10) + '...';
-    $articleList.find('li[alt="' + article.date + '"]').html(title + '<a class="delete" title="删除文章"></a>');
-    saveArticle();
-});
+editor.addEventListener('scroll', handleScroll);
+preview.addEventListener('scroll', handleScroll);
 
 
 // 定时记录编辑区并自动保存
@@ -165,161 +152,6 @@ editor.addEventListener('keydown', function(event) {
 });
 
 
-/*
-导航栏
-*/
-
-// 新建文章
-$('.new-article').click(function() {
-    // 关闭自动保存
-    clearTimeout(timer);
-    // 清除记录栈
-    undoLog = [];
-    redoLog = [];
-    $undo.attr('disabled', true).css('background-color', '#555');
-    $redo.attr('disabled', true).css('background-color', '#555');
-    article = {
-        title: '新建文章',
-        body: '',
-        date: ''
-    };
-    articleSource.push(article);
-    // 设置日期
-    var now = new Date();
-    article.date = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-    // 设置标题，编辑区和预览区
-    inputTitle.value = article.title;
-    editor.value = article.body;
-    preview.innerHTML = md.render(editor.value);
-    // 添加到文章列表
-    $('.active').removeClass('active');
-    $articleList.prepend('<li class="active" alt="' + article.date + '" title="选择文章">' + article.title + '<a class="delete" title="删除文章"></a></li>');
-    // 重启自动保存
-    setLog();
-});
-
-// 删除当前文章
-$('.del-article').click(function() {
-    var date = article.date;
-    var length = $articleList.children().length;
-    for (var i = 0; i < length; i++) {
-        if ($($articleList.children()[i]).is('.active')) {
-            $($articleList.children()[i]).find('.delete').click();
-        }
-    }
-});
-
-// 下载文章
-$('.down-article').click(function() {
-    var name = article.title + '.md';
-    var blob = new Blob([article.body], {
-        type: 'text/plain'
-    });
-    if (window.saveAs) {
-        // IE
-        window.saveAs(blob, name);
-    } else if (navigator.saveBlob) {
-        // IE
-        navigator.saveBlob(blob, name);
-    } else {
-        // 非IE
-        url = URL.createObjectURL(blob);
-        var link = document.createElement("a");
-        link.setAttribute('href', url);
-        link.setAttribute('download', name);
-        // 模拟点击下载事件
-        var event = document.createEvent('MouseEvents');
-        event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-        link.dispatchEvent(event);
-    }
-});
-
-// undo
-$undo.click(function() {
-    redoLog.push(undoLog.pop());
-    $editor.val(undoLog[undoLog.length - 1]).blur();
-    // 当记录栈没有内容时，设置按钮不可用
-    if (!undoLog[undoLog.length - 1]) {
-        $undo.attr('disabled', true).css('background-color', '#555');
-    }
-    $redo.attr('disabled', false).css('background-color', '#fcfcfc');
-    preview.innerHTML = md.render(editor.value);
-    article.body = editor.value;
-    saveArticle();
-});
-
-// redo
-$redo.click(function() {
-    var redoTxt = redoLog.pop();
-    undoLog.push(redoTxt);
-    // 当记录栈没有内容时，设置按钮不可用
-    if (!redoLog[redoLog.length - 1]) {
-        $redo.attr('disabled', true).css('background-color', '#555');
-    }
-    $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-    $editor.val(redoTxt).blur();
-    preview.innerHTML = md.render(editor.value);
-    article.body = editor.value;
-    saveArticle();
-});
-
-// 双屏显示
-$showDouble.click(function() {
-    $editor.css({
-        'display': 'block',
-        'width': '48%'
-    });
-    $preview.css({
-        'display': 'block',
-        'width': '52%'
-    });
-    $toolbar.css('display', 'block');
-    $showDouble.attr('disabled', true).css('background-color', '#555');
-    $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
-    $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
-});
-
-// 只显示编辑区
-$showEditor.click(function() {
-    $editor.css({
-        'display': 'block',
-        'width': '100%'
-    });
-    $preview.css({
-        'display': 'none',
-        'width': '0%'
-    });
-    $toolbar.css('display', 'block');
-    $showEditor.attr('disabled', true).css('background-color', '#555');
-    $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
-    $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
-});
-
-// 只显示预览区
-$showPreview.click(function() {
-    $editor.css({
-        'display': 'none',
-        'width': '0%'
-    });
-    $preview.css({
-        'display': 'block',
-        'width': '100%'
-    });
-    $toolbar.css('display', 'none');
-    $showPreview.attr('disabled', true).css('background-color', '#555');
-    $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
-    $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
-});
-
-// 语法提示
-$('.show-tips').click(function() {
-    if ($('.tips').css('display') === 'none') {
-        $('.tips').css('display', 'block');
-    } else {
-        $('.tips').css('display', 'none');
-    }
-});
-
 // 文件拖拽上传
 document.addEventListener('drop', function(event) {
     event.preventDefault();
@@ -338,6 +170,196 @@ document.addEventListener('drop', function(event) {
 }, false);
 
 
+
+/*
+导航栏
+*/
+
+// 记录标题变动
+inputTitle.addEventListener('change', function() {
+    // 去除前后空格并做XSS输入过滤
+    article.title = inputTitle.value.replace(regTrim, '').replace(/[<>'&]/g, function(match) {
+        switch (match) {
+            case '<':
+                return '&lt;';
+            case '>':
+                return '&gt;';
+            case '&':
+                return '&amp;';
+            case '\'':
+                return '&quot;';
+        }
+    });
+    // 若输入为空则取日期为标题
+    article.title = article.title || article.date;
+    // 长标题截短
+    var title = article.title;
+    title = (title.length < 11) ? title : title.substring(0, 10) + '...';
+    $articleList.find('li[alt="' + article.date + '"]').html(title + '<a class="delete" title="删除文章"></a>');
+    saveArticle();
+});
+
+
+// 导航栏按钮点击事件
+$('.nav').click(function(event) {
+    var $target = $(event.target);
+    switch ($target.attr('class')) {
+        // 新建文章
+        case 'new-article':
+        case 'icon-new':
+            // 关闭自动保存
+            clearTimeout(timer);
+            // 清除记录栈
+            undoLog = [];
+            redoLog = [];
+            $undo.attr('disabled', true).css('background-color', '#555');
+            $redo.attr('disabled', true).css('background-color', '#555');
+            article = {
+                title: '新建文章',
+                body: '',
+                date: ''
+            };
+            articleSource.push(article);
+            // 设置日期
+            var now = new Date();
+            article.date = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + ' ' + now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+            // 设置标题，编辑区和预览区
+            inputTitle.value = article.title;
+            editor.value = article.body;
+            preview.innerHTML = md.render(editor.value);
+            // 添加到文章列表
+            $('.active').removeClass('active');
+            $articleList.prepend('<li class="active" alt="' + article.date + '" title="选择文章">' + article.title + '<a class="delete" title="删除文章"></a></li>');
+            // 重启自动保存
+            setLog();
+            break;
+            //删除文章
+        case 'del-article':
+        case 'icon-del':
+            var date = article.date;
+            var length = $articleList.children().length;
+            for (var i = 0; i < length; i++) {
+                if ($($articleList.children()[i]).is('.active')) {
+                    $($articleList.children()[i]).find('.delete').click();
+                }
+            }
+            break;
+            // 下载文章
+        case 'down-article':
+        case 'icon-download':
+            var name = article.title + '.md';
+            var blob = new Blob([article.body], {
+                type: 'text/plain'
+            });
+            if (window.saveAs) {
+                // IE
+                window.saveAs(blob, name);
+            } else if (navigator.saveBlob) {
+                // IE
+                navigator.saveBlob(blob, name);
+            } else {
+                // 非IE
+                url = URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                link.setAttribute('href', url);
+                link.setAttribute('download', name);
+                // 模拟点击下载事件
+                var event = document.createEvent('MouseEvents');
+                event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+                link.dispatchEvent(event);
+            }
+            break;
+            // 撤销
+        case 'undo':
+        case 'icon-undo':
+            redoLog.push(undoLog.pop());
+            $editor.val(undoLog[undoLog.length - 1]).blur();
+            // 当记录栈没有内容时，设置按钮不可用
+            if (!undoLog[undoLog.length - 1]) {
+                $undo.attr('disabled', true).css('background-color', '#555');
+            }
+            $redo.attr('disabled', false).css('background-color', '#fcfcfc');
+            preview.innerHTML = md.render(editor.value);
+            article.body = editor.value;
+            saveArticle();
+            break;
+            // 恢复
+        case 'redo':
+        case 'icon-redo':
+            var redoTxt = redoLog.pop();
+            undoLog.push(redoTxt);
+            // 当记录栈没有内容时，设置按钮不可用
+            if (!redoLog[redoLog.length - 1]) {
+                $redo.attr('disabled', true).css('background-color', '#555');
+            }
+            $undo.attr('disabled', false).css('background-color', '#fcfcfc');
+            $editor.val(redoTxt).blur();
+            preview.innerHTML = md.render(editor.value);
+            article.body = editor.value;
+            saveArticle();
+            break;
+            // 双屏显示
+        case 'show-double':
+        case 'icon-double':
+            $editor.css({
+                'display': 'block',
+                'width': '48%'
+            });
+            $preview.css({
+                'display': 'block',
+                'width': '52%'
+            });
+            $toolbar.css('display', 'block');
+            $showDouble.attr('disabled', true).css('background-color', '#555');
+            $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
+            $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
+            break;
+            // 只显示编辑区
+        case 'show-editor':
+        case 'icon-editor':
+            $editor.css({
+                'display': 'block',
+                'width': '100%'
+            });
+            $preview.css({
+                'display': 'none',
+                'width': '0%'
+            });
+            $toolbar.css('display', 'block');
+            $showEditor.attr('disabled', true).css('background-color', '#555');
+            $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
+            $showPreview.attr('disabled', false).css('background-color', '#fcfcfc');
+            break;
+            // 只显示预览区
+        case 'show-preview':
+        case 'icon-preview':
+            $editor.css({
+                'display': 'none',
+                'width': '0%'
+            });
+            $preview.css({
+                'display': 'block',
+                'width': '100%'
+            });
+            $toolbar.css('display', 'none');
+            $showPreview.attr('disabled', true).css('background-color', '#555');
+            $showEditor.attr('disabled', false).css('background-color', '#fcfcfc');
+            $showDouble.attr('disabled', false).css('background-color', '#fcfcfc');
+            break;
+            // 显示语法帮助
+        case 'show-tips':
+        case 'icon-tips':
+            if ($('.tips').css('display') === 'none') {
+                $('.tips').css('display', 'block');
+            } else {
+                $('.tips').css('display', 'none');
+            }
+            break;
+    }
+});
+
+
+
 /*
 浮动工具栏
 */
@@ -348,7 +370,7 @@ var insertText = function(text) {
     if (document.selection) {
         var sel = document.selection.createRange();
         sel.text = text;
-        // 非IE
+    // 非IE
     } else if (typeof editor.selectionStart === 'number' && typeof editor.selectionEnd === 'number') {
         // 获取文本起始点和结束点
         var startPos = editor.selectionStart;
@@ -359,11 +381,40 @@ var insertText = function(text) {
         editor.value = tmpText.substring(0, startPos) + text + tmpText.substring(endPos, tmpText.length);
         // 移动光标
         cursorPos += text.length;
-        editor.selectionStart = editor.selectionEnd = cursorPos;
+        // 改变选中区域
+        if (text === '## 请输入标题') {
+            editor.selectionStart = cursorPos - 5;
+            editor.selectionEnd = cursorPos;
+        } else if (text === '**请输入文字**') {
+            editor.selectionStart = cursorPos - 7;
+            editor.selectionEnd = cursorPos - 2;
+        } else if (text === '*请输入文字*') {
+            editor.selectionStart = cursorPos - 6;
+            editor.selectionEnd = cursorPos - 1;
+        } else if (text === '\t 请输入代码') {
+            editor.selectionStart = cursorPos - 5;
+            editor.selectionEnd = cursorPos;
+        } else if (text === '* 请输入列表项') {
+            editor.selectionStart = cursorPos - 6;
+            editor.selectionEnd = cursorPos;
+        } else if (text === '1. 请输入列表项') {
+            editor.selectionStart = cursorPos - 6;
+            editor.selectionEnd = cursorPos;
+        } else if (text === '> 请输入引用') {
+            editor.selectionStart = cursorPos - 5;
+            editor.selectionEnd = cursorPos;
+        } else {
+            editor.selectionStart = editor.selectionEnd = cursorPos;
+        }
+    // 找不到光标
     } else {
         editor.value += text;
     }
+    editor.focus();
+    $undo.attr('disabled', false).css('background-color', '#fcfcfc');
+    preview.innerHTML = md.render(editor.value);
 };
+
 
 // 获取链接和图片地址
 var getAddress = function(type) {
@@ -372,13 +423,18 @@ var getAddress = function(type) {
     // 表单点击事件
     $formWrapper.click(function(event) {
         var $target = $(event.target);
+        // 取消按钮
         if ($target.is('.cancel')) {
             $('.form-wrapper input').val('');
             $formWrapper.css('display', 'none');
             $formWrapper.off('click keydown');
+            event.preventDefault();
+            editor.focus();
+            // 提交按钮
         } else if ($target.is('.submit')) {
-            var word = $('.input-word').val().replace(/(^\s*)|(\s*$)/g, '');
-            var address = $('.input-address').val().replace(/(^\s*)|(\s*$)/g, '');
+            var word = $('.input-word').val().replace(regTrim, '');
+            var address = $('.input-address').val().replace(regTrim, '');
+            // 判断是插入图片还是链接
             if (type === 'img') {
                 insertText('![' + word + ']' + '(' + address + ')');
             } else {
@@ -387,10 +443,11 @@ var getAddress = function(type) {
             $('.form-wrapper input').val('');
             $formWrapper.css('display', 'none');
             $formWrapper.off('click keydown');
+            $undo.attr('disabled', false).css('background-color', '#fcfcfc');
+            preview.innerHTML = md.render(editor.value);
+            event.preventDefault();
+            editor.focus();
         }
-        $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-        preview.innerHTML = md.render(editor.value);
-        event.preventDefault();
     });
 
     // 回车提交事件
@@ -398,8 +455,8 @@ var getAddress = function(type) {
         var keyCode = event.keyCode || event.which;
         // 如果按下回车键
         if (keyCode === 13) {
-            var word = $('.input-word').val().replace(/(^\s*)|(\s*$)/g, '');
-            var address = $('.input-address').val().replace(/(^\s*)|(\s*$)/g, '');
+            var word = $('.input-word').val().replace(regTrim, '');
+            var address = $('.input-address').val().replace(regTrim, '');
             if (type === 'img') {
                 insertText('![' + word + ']' + '(' + address + ')');
             } else {
@@ -410,6 +467,7 @@ var getAddress = function(type) {
             $formWrapper.off('click keydown');
             preview.innerHTML = md.render(editor.value);
             event.preventDefault();
+            editor.focus();
         }
     });
 };
@@ -420,39 +478,48 @@ $toolbar.click(function(event) {
     var $target = $(event.target);
     switch ($target.attr('class')) {
         case 'add-heading':
-            insertText('## 标题');
+        case 'icon-heading':
+            insertText('## 请输入标题');
             break;
         case 'add-strong':
-            insertText('**粗体**');
+        case 'icon-strong':
+            insertText('**请输入文字**');
             break;
         case 'add-italic':
-            insertText('*斜体*');
+        case 'icon-italic':
+            insertText('*请输入文字*');
             break;
         case 'add-code':
-            insertText('\t输入代码');
+        case 'icon-code':
+            insertText('\t 请输入代码');
             break;
         case 'add-link':
+        case 'icon-link':
             getAddress('link');
             break;
         case 'add-img':
+        case 'icon-img':
             getAddress('img');
             break;
         case 'add-ul':
-            insertText('* 列表项');
+        case 'icon-ul':
+            insertText('* 请输入列表项');
             break;
         case 'add-ol':
-            insertText('1. 列表项');
+        case 'icon-ol':
+            insertText('1. 请输入列表项');
             break;
         case 'add-quote':
-            insertText('> 块引用');
+        case 'icon-quote':
+            insertText('> 请输入引用');
             break;
         case 'add-line':
+        case 'icon-line':
             insertText('----------');
             break;
     }
-    $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-    preview.innerHTML = md.render(editor.value);
 });
+
 
 
 /*
@@ -475,7 +542,7 @@ $toolbar.click(function(event) {
 // 显示文章列表
 $('#show-article').click(function() {
     if ($('.aside').css('left') === '0px') {
-        $('#show-article').css('background-image', 'url(../img/arrow_right.png)');
+        $('.icon-arrow_left').removeClass('icon-arrow_left').addClass('icon-arrow_right');
         $('.aside').css('left', '-250px');
         $('#show-article').css('left', '0px');
         $('.modal').css('display', 'none');
@@ -483,7 +550,7 @@ $('#show-article').click(function() {
         // 重启自动保存
         setLog();
     } else {
-        $('#show-article').css('background-image', 'url(../img/arrow_left.png)');
+        $('.icon-arrow_right').removeClass('icon-arrow_right').addClass('icon-arrow_left');
         $('.aside').css('left', '0px');
         $('#show-article').css('left', '250px');
         $('.modal').css('display', 'block');
@@ -492,6 +559,7 @@ $('#show-article').click(function() {
         clearTimeout(timer);
     }
 });
+
 
 // 删除和选择文章事件
 $articleList.click(function(event) {
