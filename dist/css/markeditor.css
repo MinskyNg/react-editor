@@ -5,6 +5,9 @@ html, body {
   height: 100%;
   overflow: hidden; }
 
+body {
+  font-family: 'Microsoft Yahei', Helvetica, Arial, sans-serif; }
+
 input, button, select, textarea {
   outline: none; }
 
@@ -352,7 +355,7 @@ input, button, select, textarea {
   position: absolute;
   bottom: 40px;
   left: 40px;
-  width: 470px;
+  width: 480px;
   height: 40px;
   padding: 3px;
   padding-left: 8px;
