@@ -257,8 +257,7 @@ input, button, select, textarea {
 #preview {
   float: right;
   height: 100%;
-  padding: 5px;
-  padding-left: 20px;
+  padding: 5px 20px;
   color: #3b3b3b;
   overflow: auto; }
   #preview a {

@@ -11,15 +11,10 @@
     // 预览区
     var preview = document.getElementById('preview');
     var $preview = $(preview);
-    // 创建markdown转换对象并设置代码高亮
-    var md = markdownit({
-        highlight: function(str, lang) {
-            if (lang && hljs.getLanguage(lang)) {
-                try {
-                    return hljs.highlight(lang, str).value;
-                } catch (__) {}
-            }
-            return '';
+    // 配置markdown编译器和highlight.js
+    marked.setOptions({
+        highlight: function(code) {
+            return hljs.highlightAuto(code).value;
         }
     });
     // 自动保存定时器
@@ -65,7 +60,7 @@
     // 设置标题，编辑区和预览区
     inputTitle.value = article.title;
     editor.value = article.body;
-    preview.innerHTML = md.render(editor.value);
+    preview.innerHTML = marked(editor.value);
 
 
     // 将文章保存到本地
@@ -89,7 +84,7 @@
 
     // 实时预览
     $editor.on('input propertychange', function() {
-        preview.innerHTML = md.render(editor.value);
+        preview.innerHTML = marked(editor.value);
         // redo不可用 undo可用
         redoLog = [];
         $redo.attr('disabled', true).css('background-color', '#555');
@@ -122,14 +117,15 @@
     // 定时记录编辑区并自动保存
     var setLog = function() {
         if (undoLog[undoLog.length - 1] !== editor.value) {
-            // 防止存储数据栈过深
+            // 防止存储记录过多
             if (undoLog.length > 50) {
                 undoLog.shift();
             }
-            undoLog[undoLog.length] = editor.value;
+            // 记录数据
+            undoLog.push(editor.value);
+            // 自动保存
             article.body = editor.value;
-            articleStorage = JSON.stringify(articleSource);
-            localStorage.setItem('article', articleStorage);
+            saveArticle();
         }
         timer = setTimeout(setLog, 800);
     };
@@ -148,7 +144,7 @@
             // 阻止默认事件
             event.preventDefault();
             $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-            preview.innerHTML = md.render(editor.value);
+            preview.innerHTML = marked(editor.value);
         }
     });
 
@@ -164,7 +160,7 @@
             $('.new-article').click();
             editor.value = evt.target.result;
             article.body = editor.value;
-            preview.innerHTML = md.render(editor.value);
+            preview.innerHTML = marked(editor.value);
             saveArticle();
         };
         reader.readAsText(event.dataTransfer.files[0]);
@@ -227,7 +223,7 @@
                 // 设置标题，编辑区和预览区
                 inputTitle.value = article.title;
                 editor.value = article.body;
-                preview.innerHTML = md.render(editor.value);
+                preview.innerHTML = marked(editor.value);
                 // 添加到文章列表
                 $('.active').removeClass('active');
                 $articleList.prepend('<li class="active" alt="' + article.date + '" title="选择文章">' + article.title + '<a class="delete" title="删除文章"></a></li>');
@@ -245,7 +241,7 @@
                     }
                 }
                 break;
-                // 下载文章
+                // 导出文章
             case 'down-article':
             case 'icon-download':
                 var name = article.title + '.md';
@@ -273,31 +269,37 @@
                 // 撤销
             case 'undo':
             case 'icon-undo':
-                redoLog.push(undoLog.pop());
-                $editor.val(undoLog[undoLog.length - 1]).blur();
-                // 当记录栈没有内容时，设置按钮不可用
-                if (!undoLog[undoLog.length - 1]) {
-                    $undo.attr('disabled', true).css('background-color', '#555');
+                // 如果存在初始值以外内容，执行操作
+                if (undoLog.length > 1) {
+                    redoLog.push(undoLog.pop());
+                    $editor.val(undoLog[undoLog.length - 1]).blur();
+                    $redo.attr('disabled', false).css('background-color', '#fcfcfc');
+                    preview.innerHTML = marked(editor.value);
+                    article.body = editor.value;
+                    saveArticle();
+                    // 当撤销记录栈没有初始值以外内容时，设置按钮不可用
+                    if (undoLog.length <= 1) {
+                        $undo.attr('disabled', true).css('background-color', '#555');
+                    }
                 }
-                $redo.attr('disabled', false).css('background-color', '#fcfcfc');
-                preview.innerHTML = md.render(editor.value);
-                article.body = editor.value;
-                saveArticle();
                 break;
                 // 恢复
             case 'redo':
             case 'icon-redo':
-                var redoTxt = redoLog.pop();
-                undoLog.push(redoTxt);
-                // 当记录栈没有内容时，设置按钮不可用
-                if (!redoLog[redoLog.length - 1]) {
-                    $redo.attr('disabled', true).css('background-color', '#555');
+                // 如果存在内容，执行操作
+                if (redoLog.length !== 0) {
+                    var redoTxt = redoLog.pop();
+                    undoLog.push(redoTxt);
+                    $undo.attr('disabled', false).css('background-color', '#fcfcfc');
+                    $editor.val(redoTxt).blur();
+                    preview.innerHTML = marked(editor.value);
+                    article.body = editor.value;
+                    saveArticle();
+                    // 当恢复记录栈没有内容时，设置按钮不可用
+                    if (redoLog.length === 0) {
+                        $redo.attr('disabled', true).css('background-color', '#555');
+                    }
                 }
-                $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-                $editor.val(redoTxt).blur();
-                preview.innerHTML = md.render(editor.value);
-                article.body = editor.value;
-                saveArticle();
                 break;
                 // 双屏显示
             case 'show-double':
@@ -413,7 +415,7 @@
         }
         editor.focus();
         $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-        preview.innerHTML = md.render(editor.value);
+        preview.innerHTML = marked(editor.value);
     };
 
 
@@ -445,7 +447,7 @@
                 $formWrapper.css('display', 'none');
                 $formWrapper.off('click keydown');
                 $undo.attr('disabled', false).css('background-color', '#fcfcfc');
-                preview.innerHTML = md.render(editor.value);
+                preview.innerHTML = marked(editor.value);
                 event.preventDefault();
                 editor.focus();
             }
@@ -466,7 +468,7 @@
                 $('.form-wrapper input').val('');
                 $formWrapper.css('display', 'none');
                 $formWrapper.off('click keydown');
-                preview.innerHTML = md.render(editor.value);
+                preview.innerHTML = marked(editor.value);
                 event.preventDefault();
                 editor.focus();
             }
@@ -613,7 +615,7 @@
                     // 设置标题，编辑区和预览区
                     inputTitle.value = article.title;
                     editor.value = article.body;
-                    preview.innerHTML = md.render(editor.value);
+                    preview.innerHTML = marked(editor.value);
                     break;
                 }
             }
