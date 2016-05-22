@@ -1,7 +1,7 @@
 {
   "name": "markeditor",
   "version": "1.0.0",
-  "description": "Minsky's personal markeditor",
+  "description": "markeditor",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

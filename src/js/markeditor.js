@@ -11,7 +11,7 @@
     // 预览区
     var preview = document.getElementById('preview');
     var $preview = $(preview);
-    // 配置markdown编译器和highlight.js
+    // 配置markdown解析器和highlight.js
     marked.setOptions({
         highlight: function(code) {
             return hljs.highlightAuto(code).value;
