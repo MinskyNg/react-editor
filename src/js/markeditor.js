@@ -173,7 +173,7 @@
     */
 
     // 记录标题变动
-    inputTitle.addEventListener('change', function() {
+    inputTitle.addEventListener('input', function() {
         // 去除前后空格并做XSS输入过滤
         article.title = inputTitle.value.replace(regTrim, '').replace(/[<>'&]/g, function(match) {
             switch (match) {
@@ -367,49 +367,121 @@
     浮动工具栏
     */
 
-    // 在光标处插入文本
+    // 在光标处插入文本或为文本添加标签
     var insertText = function(text) {
         // IE
         if (document.selection) {
             var sel = document.selection.createRange();
-            sel.text = text;
+            // 没有选中文本直接插入文字
+            if (sel.text === '') {
+                sel.text = text;
+            // 有选中文本则为文本添加标签
+            } else {
+                switch (text) {
+                    case '## 请输入标题':
+                        sel.text = '## ' + sel.text;
+                        break;
+                    case '**请输入文字**':
+                        sel.text = '**' + sel.text + '**';
+                        break;
+                    case '*请输入文字*':
+                        sel.text = '*' + sel.text + '*';
+                        break;
+                    case '\t 请输入代码':
+                        sel.text = '\t ' + sel.text;
+                        break;
+                    case '* 请输入列表项':
+                        sel.text = '* ' + sel.text;
+                        break;
+                    case '1. 请输入列表项':
+                        sel.text = '1. ' + sel.text;
+                        break;
+                    case '> 请输入引用':
+                        sel.text = '> ' + sel.text;
+                        break;
+                    default:
+                        sel.text = '-------';
+                }
+            }
             // 非IE
         } else if (typeof editor.selectionStart === 'number' && typeof editor.selectionEnd === 'number') {
             // 获取文本起始点和结束点
             var startPos = editor.selectionStart;
             var endPos = editor.selectionEnd;
+            // 记录光标位置
             var cursorPos = startPos;
-            // 插入文本
+            // 编辑区文本
             var tmpText = editor.value;
-            editor.value = tmpText.substring(0, startPos) + text + tmpText.substring(endPos, tmpText.length);
-            // 移动光标
-            cursorPos += text.length;
-            // 改变选中区域
-            if (text === '## 请输入标题') {
-                editor.selectionStart = cursorPos - 5;
-                editor.selectionEnd = cursorPos;
-            } else if (text === '**请输入文字**') {
-                editor.selectionStart = cursorPos - 7;
-                editor.selectionEnd = cursorPos - 2;
-            } else if (text === '*请输入文字*') {
-                editor.selectionStart = cursorPos - 6;
-                editor.selectionEnd = cursorPos - 1;
-            } else if (text === '\t 请输入代码') {
-                editor.selectionStart = cursorPos - 5;
-                editor.selectionEnd = cursorPos;
-            } else if (text === '* 请输入列表项') {
-                editor.selectionStart = cursorPos - 6;
-                editor.selectionEnd = cursorPos;
-            } else if (text === '1. 请输入列表项') {
-                editor.selectionStart = cursorPos - 6;
-                editor.selectionEnd = cursorPos;
-            } else if (text === '> 请输入引用') {
-                editor.selectionStart = cursorPos - 5;
-                editor.selectionEnd = cursorPos;
+            // 没有选中区域时
+            if (startPos === endPos) {
+                // 直接插入文本
+                editor.value = tmpText.substring(0, startPos) + text + tmpText.substring(endPos, tmpText.length);
+                // 移动光标
+                cursorPos += text.length;
+                // 改变选中区域
+                switch (text) {
+                    case '## 请输入标题':
+                        editor.selectionStart = cursorPos - 5;
+                        editor.selectionEnd = cursorPos;
+                        break;
+                    case '**请输入文字**':
+                        editor.selectionStart = cursorPos - 7;
+                        editor.selectionEnd = cursorPos - 2;
+                        break;
+                    case '*请输入文字*':
+                        editor.selectionStart = cursorPos - 6;
+                        editor.selectionEnd = cursorPos - 1;
+                        break;
+                    case '\t 请输入代码':
+                        editor.selectionStart = cursorPos - 5;
+                        editor.selectionEnd = cursorPos;
+                        break;
+                    case '* 请输入列表项':
+                        editor.selectionStart = cursorPos - 6;
+                        editor.selectionEnd = cursorPos;
+                        break;
+                    case '1. 请输入列表项':
+                        editor.selectionStart = cursorPos - 6;
+                        editor.selectionEnd = cursorPos;
+                        break;
+                    case '> 请输入引用':
+                        editor.selectionStart = cursorPos - 5;
+                        editor.selectionEnd = cursorPos;
+                        break;
+                    default:
+                        editor.selectionStart = editor.selectionEnd = cursorPos;
+                }
+            // 存在选中区域
             } else {
-                editor.selectionStart = editor.selectionEnd = cursorPos;
+                var replaceText;
+                switch (text) {
+                    case '## 请输入标题':
+                        replaceText = '## ' + tmpText.substring(startPos, endPos);
+                        break;
+                    case '**请输入文字**':
+                        replaceText = '**' + tmpText.substring(startPos, endPos) + '**';
+                        break;
+                    case '*请输入文字*':
+                        replaceText = '*' + tmpText.substring(startPos, endPos) + '*';
+                        break;
+                    case '\t 请输入代码':
+                        replaceText = '\t ' + tmpText.substring(startPos, endPos);
+                        break;
+                    case '* 请输入列表项':
+                        replaceText = '* ' + tmpText.substring(startPos, endPos);
+                        break;
+                    case '1. 请输入列表项':
+                        replaceText = '1. ' + tmpText.substring(startPos, endPos);
+                        break;
+                    case '> 请输入引用':
+                        replaceText = '> ' + tmpText.substring(startPos, endPos);
+                        break;
+                    default:
+                        replaceText = '-------';
+                }
+                editor.value = tmpText.substring(0, startPos) + replaceText + tmpText.substring(endPos, tmpText.length);
             }
-            // 找不到光标
+        // 找不到光标
         } else {
             editor.value += text;
         }
