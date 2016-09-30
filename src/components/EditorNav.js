@@ -1,21 +1,133 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 
 export default class EditorNav extends React.PureComponent {
+    constructor(props) {
+        super(props);
+        this.state = { tipsDisplay: false };
+    }
+
+    handleChange() {
+        const title = this._title.value.replace(/(^\s*)|(\s*$)/g, '');
+        this.props.updateTitle(title || '无标题');
+    }
+
+    handleAdd() {
+        let date = new Date();
+        date = `${date.getFullYear()}-${date.getMonth() + 1}-
+              ${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        this.props.addArticle(date);
+    }
+
+    handleDown() {
+        const name = `${this.props.title}.md`;
+        const blob = new Blob([this.props.body], {
+            type: 'text/plain'
+        });
+        if (window.saveAs) {
+            // IE
+            window.saveAs(blob, name);
+        } else if (navigator.saveBlob) {
+            // IE
+            navigator.saveBlob(blob, name);
+        } else {
+            // 非IE
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', name);
+            // 模拟点击下载事件
+            const event = document.createEvent('MouseEvents');
+            event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+            link.dispatchEvent(event);
+        }
+    }
+
     render() {
+        const screenShow = this.props.screenShow;
+        const changeScreen = this.props.changeScreen;
         return (
             <div className="nav">
-                <input type="text" id="input-title" placeholder="请输入标题"></input>
-                <button className="new-article" title="新建文章"><span className="icon-new"></span></button>
-                <button className="del-article" title="删除文章"><span className="icon-del"></span></button>
-                <button className="down-article" title="下载文章"><span className="icon-download"></span></button>
-                <button className="undo" title="撤销" disabled="true" style={{ backgroundColor: '#555' }}><span className="icon-undo"></span></button>
-                <button className="redo" title="恢复" disabled="true" style={{ backgroundColor: '#555' }}><span className="icon-redo"></span></button>
-                <button className="show-double" title="双屏显示" disabled="true" style={{ backgroundColor: '#555' }}><span className="icon-double"></span></button>
-                <button className="show-editor" title="只显示编辑区" style={{ backgroundColor: '#F5F5F5' }}><span className="icon-editor"></span></button>
-                <button className="show-preview" title="只显示预览区" style={{ backgroundColor: '#F5F5F5' }}><span className="icon-preview"></span></button>
-                <a title="语法提示" className="show-tips"><span className="icon-tips"></span></a>
-                <div className="tips" style={{ display: 'none' }}>
+                <input
+                  id="input-title"
+                  type="text"
+                  placeholder="请输入标题"
+                  ref={ input => this._title = input }
+                  onInput={ () => this.handleChange() }
+                  onChange={ () => this.handleChange() }
+                  value={ this.props.title }
+                >
+                </input>
+
+                <button className="add-article" title="新建文章"
+                  onClick={ () => this.handleAdd() }
+                >
+                    <span className="icon-add"></span>
+                </button>
+                <button className="del-article" title="删除文章"
+                  onClick={ () => this.props.delArticle(this.props.date) }
+                >
+                    <span className="icon-del"></span><
+                /button>
+                <button className="down-article" title="下载文章"
+                  onClick={ () => this.handleDown() }
+                >
+                    <span className="icon-download"></span>
+                </button>
+                <button className="undo" title="撤销"
+                  style={{
+                      backgroundColor: this.props.undo ? '#555' : '#F5F5F5',
+                      cursor: this.props.undo ? 'auto' : 'pointer'
+                  }}
+                  onClick={ () => this.props.handleUndo() }
+                >
+                    <span className="icon-undo"></span>
+                </button>
+                <button className="redo" title="恢复"
+                  style={{
+                      backgroundColor: this.props.redo ? '#555' : '#F5F5F5',
+                      cursor: this.props.redo ? 'auto' : 'pointer'
+                  }}
+                  onClick={ () => this.props.handleRedo() }
+                >
+                    <span className="icon-redo"></span>
+                </button>
+                <button className="show-double" title="双屏显示"
+                  style={{
+                      backgroundColor: screenShow === 2 ? '#555' : '#F5F5F5',
+                      cursor: screenShow === 2 ? 'auto' : 'pointer'
+                  }}
+                  onClick={ () => changeScreen(2) }
+                >
+                    <span className="icon-double"></span>
+                </button>
+                <button className="show-editor" title="只显示编辑区"
+                  style={{
+                      backgroundColor: screenShow === 0 ? '#555' : '#F5F5F5',
+                      cursor: screenShow === 0 ? 'auto' : 'pointer'
+                  }}
+                  onClick={ () => changeScreen(0) }
+                >
+                    <span className="icon-editor"></span>
+                </button>
+                <button className="show-preview" title="只显示预览区"
+                  style={{
+                      backgroundColor: screenShow === 1 ? '#555' : '#F5F5F5',
+                      cursor: screenShow === 1 ? 'auto' : 'pointer'
+                  }}
+                  onClick={ () => changeScreen(1) }
+                >
+                    <span className="icon-preview"></span>
+                </button>
+
+                <a title="语法提示" className="show-tips"
+                  onClick={ () => this.setState({ tipsDisplay: !this.state.tipsDisplay }) }
+                >
+                    <span className="icon-tips"></span>
+                </a>
+                <div className="tips"
+                  style={{ display: this.state.tipsDisplay ? 'block' : 'none' }}
+                >
                     <h2>Markdown 简明语法</h2>
                     <a target="_blank" href="http://lutaf.com/markdown-simple-usage.htm">原文地址</a>
                     <h3>基本符号</h3>

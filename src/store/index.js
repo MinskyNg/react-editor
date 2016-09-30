@@ -11,9 +11,9 @@ const articles = JSON.parse(localStorage.getItem('articles')) || [
 ];
 
 const initialState = fromJS({
-    nowEditor: articles[articles.length - 1].date,
-    showForm: false,
-    articles
+    articles,
+    listVisible: false,
+    screenShow: 2
 });
 
 // 调用日志打印方法

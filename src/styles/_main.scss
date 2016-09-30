@@ -27,7 +27,7 @@
     position: absolute;
     bottom: 40px;
     left: 40px;
-    width: 480px;
+    width: 440px;
     height: 40px;
     padding: 3px;
     padding-left: 8px;
@@ -43,54 +43,7 @@
         border-radius: 5px;
         vertical-align: middle;
         background-color: transparent;
+        cursor: pointer;
     }
 }
 
-// 弹出输入框
-.form-wrapper {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.2);
-    z-index: 999;
-    form {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 500px;
-        height: 160px;
-        margin-left: -250px;
-        margin-top: -180px;
-        padding: 20px;
-        border-radius: 15px;
-        background-color: #f5f5f5;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        [type="text"] {
-            display: block;
-            width: 280px;
-            height: 30px;
-            margin-top: 8px;
-            margin-left: 90px;
-            padding: 3px;
-            border: 1px solid #f5f5f5;
-            border-radius: 5px;
-            box-shadow: 0px 1px 2px rgba(0,0,0,0.5);
-        }
-        button {
-            width: 100px;
-            height: 30px;
-            margin-top: 20px;
-            padding: 3px;
-            border: 0;
-            border-radius: 8px;
-            box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
-            &:hover {
-                background-color: #B7B7B7;
-            }
-        }
-        .cancel {
-            margin-left: 60px;
-            margin-right: 130px;
-        }
-    }
-}

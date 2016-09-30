@@ -1,7 +1,7 @@
 {
-  "name": "markeditor",
+  "name": "react-editor",
   "version": "1.0.0",
-  "description": "markeditor",
+  "description": "react-editor",
   "scripts": {
     "start": "webpack-dev-server --devtool eval  --progress --colors --hot --content-base dist",
     "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MinskyNg/markeditor.git"
+    "url": "git+https://github.com/MinskyNg/react-editor.git"
   },
   "author": "minskyng",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MinskyNg/markeditor/issues"
+    "url": "https://github.com/MinskyNg/react-editor/issues"
   },
-  "homepage": "https://github.com/MinskyNg/markeditor#readme",
+  "homepage": "https://github.com/MinskyNg/react-editor#readme",
   "dependencies": {
     "babel-runtime": "6.x",
     "immutable": "^3.8.1",
@@ -29,7 +29,7 @@
     "redux-immutable": "^3.0.8"
   },
   "devDependencies": {
-    "autoprefixer-loader": "^3.2.0",
+    "autoprefixer": "^6.5.0",
     "babel-core": "6.x",
     "babel-eslint": "6.x",
     "babel-loader": "6.x",
@@ -47,6 +47,8 @@
     "html-webpack-plugin": "^2.22.0",
     "node-sass": "^3.8.0",
     "open-browser-webpack-plugin": "0.0.2",
+    "postcss-loader": "^0.13.0",
+    "precss": "^1.4.0",
     "redux-devtools": "^3.3.1",
     "redux-devtools-dock-monitor": "^1.1.1",
     "redux-devtools-log-monitor": "^1.0.11",
