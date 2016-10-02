@@ -3,7 +3,7 @@ import React from 'react';
 
 export default class EditorArticleItem extends React.PureComponent {
     handleDel(event) {
-        if (confirm('确定要删除此分类吗?')) {
+        if (confirm('确定要删除此文章吗?')) {
             this.props.delArticle(this.props.date);
         }
         event.preventDefault();

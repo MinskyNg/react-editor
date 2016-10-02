@@ -19,6 +19,12 @@ export default class EditorNav extends React.PureComponent {
         this.props.addArticle(date);
     }
 
+    handleDel() {
+        if (confirm('确定要删除此文章吗?')) {
+            this.props.delArticle(this.props.date);
+        }
+    }
+
     handleDown() {
         const name = `${this.props.title}.md`;
         const blob = new Blob([this.props.body], {
@@ -65,7 +71,7 @@ export default class EditorNav extends React.PureComponent {
                     <span className="icon-add"></span>
                 </button>
                 <button className="del-article" title="删除文章"
-                  onClick={ () => this.props.delArticle(this.props.date) }
+                  onClick={ () => this.handleDel() }
                 >
                     <span className="icon-del"></span><
                 /button>

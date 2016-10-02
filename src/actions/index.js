@@ -2,50 +2,20 @@ import { SHOW_LIST, ADD_ARTICLE, DEL_ARTICLE, UPDATE_ARTICLE,
     UPDATE_TITLE, CHANGE_EDITING, CHANGE_SCREEN } from '../constants/actionTypes';
 
 
-export function showList() {
-    return {
-        type: SHOW_LIST
+function makeActionCreator(type, ...argNames) {
+    return (...args) => {
+        const action = { type };
+        argNames.forEach((arg, index) => {
+            action[argNames[index]] = args[index];
+        });
+        return action;
     };
 }
 
-export function addArticle(date) {
-    return {
-        type: ADD_ARTICLE,
-        date
-    };
-}
-
-export function delArticle(date) {
-    return {
-        type: DEL_ARTICLE,
-        date
-    };
-}
-
-export function updateArticle(body) {
-    return {
-        type: UPDATE_ARTICLE,
-        body
-    };
-}
-
-export function updateTitle(title) {
-    return {
-        type: UPDATE_TITLE,
-        title
-    };
-}
-
-export function changeEditing(date) {
-    return {
-        type: CHANGE_EDITING,
-        date
-    };
-}
-
-export function changeScreen(show) {
-    return {
-        type: CHANGE_SCREEN,
-        show
-    };
-}
+export const showList = makeActionCreator(SHOW_LIST);
+export const addArticle = makeActionCreator(ADD_ARTICLE, 'date');
+export const delArticle = makeActionCreator(DEL_ARTICLE, 'date');
+export const updateArticle = makeActionCreator(UPDATE_ARTICLE, 'body');
+export const updateTitle = makeActionCreator(UPDATE_TITLE, 'title');
+export const changeEditing = makeActionCreator(CHANGE_EDITING, 'date');
+export const changeScreen = makeActionCreator(CHANGE_SCREEN, 'show');

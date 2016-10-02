@@ -3,16 +3,29 @@ import { ADD_ARTICLE, DEL_ARTICLE, UPDATE_ARTICLE, UPDATE_TITLE,
 import { fromJS } from 'immutable';
 
 
-function add_article(state, date) {
+function createReducer(initialState, handlers) {
+    return function reducer(state = initialState, action) {
+        return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;
+    };
+}
+
+const handlers = {};
+
+handlers[ADD_ARTICLE] = (state, action) => {
+    const { date } = action;
     const newState = state.unshift(fromJS({ title: '新建文章', body: '# 新建文章', date }));
     localStorage.setItem('articles', JSON.stringify(newState));
     return newState;
-}
+};
 
-function del_article(state, date) {
+handlers[DEL_ARTICLE] = (state, action) => {
+    let { date } = action;
     const len = state.size;
     if (len === 1) {
-        return add_article(state.delete(0), date);
+        date = new Date();
+        date = `${date.getFullYear()}-${date.getMonth() + 1}-
+              ${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        return handlers[ADD_ARTICLE](state.delete(0), { date });
     }
     for (let index = 0; index < len; index++) {
         if (state.get(index).get('date') === date) {
@@ -21,21 +34,24 @@ function del_article(state, date) {
             return newState;
         }
     }
-}
+};
 
-function update_article(state, body) {
+handlers[UPDATE_ARTICLE] = (state, action) => {
+    const { body } = action;
     const newState = state.update(0, x => x.set('body', body));
     localStorage.setItem('articles', JSON.stringify(newState));
     return newState;
-}
+};
 
-function update_title(state, title) {
+handlers[UPDATE_TITLE] = (state, action) => {
+    const { title } = action;
     const newState = state.update(0, x => x.set('title', title));
     localStorage.setItem('articles', JSON.stringify(newState));
     return newState;
-}
+};
 
-function change_editing(state, date) {
+handlers[CHANGE_EDITING] = (state, action) => {
+    const { date } = action;
     const len = state.size;
     for (let index = 0; index < len; index++) {
         if (state.get(index).get('date') === date) {
@@ -46,21 +62,9 @@ function change_editing(state, date) {
             return newState;
         }
     }
-}
+};
 
-export default function articles(state = fromJS([]), action) {
-    switch (action.type) {
-        case ADD_ARTICLE:
-            return add_article(state, action.date);
-        case DEL_ARTICLE:
-            return del_article(state, action.date);
-        case UPDATE_ARTICLE:
-            return update_article(state, action.body);
-        case UPDATE_TITLE:
-            return update_title(state, action.title);
-        case CHANGE_EDITING:
-            return change_editing(state, action.date);
-        default:
-            return state;
-    }
-}
+
+const articles = createReducer(fromJS([]), handlers);
+
+export default articles;
