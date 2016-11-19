@@ -1,6 +1,6 @@
 # Markdown在线编辑器
 
-## 此项目已合并到[react-diary](https://github.com/MinskyNg/react-diary)
+## 此项目已废弃，全部功能都已合并到[react-diary](https://github.com/MinskyNg/react-diary)
 
 * 兼容Github Flavored Markdown语法
 * 支持撤销操作和恢复操作
